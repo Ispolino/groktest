@@ -2,20 +2,22 @@ import datetime
 import time
 import requests
 from bs4 import BeautifulSoup
-from src.database import db_price
+from src.database.database import db_price
 from src.config import settings
 from logs import getLogger
 
 logger = getLogger(__name__)
 
 
-def save_db(data):
+def save_db(data: dict):
+    """Запись цены в базу данных"""
     db_price.insert_one(data)
-    logger.debug("add data to db")
+    logger.info(f"saved price {data['price']} to DB")
 
 
-def get_price(html):
-    price = html.find("div", attrs={"class": "amount"})
+def get_price(html: BeautifulSoup):
+    """Получения значения цены"""
+    price = html.find(settings.HTML_TAG, attrs={"class": settings.HTML_CLASS})
     btc_price = price.text.strip()
     logger.info(f"get btc price: {btc_price}")
 
@@ -27,6 +29,7 @@ def get_price(html):
 
 
 def get_page(url: str, headers: str):
+    """Получение страницы сайта с курсом"""
     try:
         response = requests.get(url, headers=headers)
 
@@ -36,7 +39,7 @@ def get_page(url: str, headers: str):
             return soup
 
     except Exception as e:
-        logger.error(e)
+        logger.error(f"failed to fetch page: {str(e)}")
         logger.exception(e)
 
 

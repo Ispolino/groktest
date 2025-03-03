@@ -10,6 +10,8 @@ class Settings:
     INTERVAL = os.getenv("INTERVAL")
     MONGO_URL = os.getenv("MONGO_URL")
     MONGO_PORT = os.getenv("MONGO_PORT")
+    HTML_TAG = os.getenv("HTML_TAG")
+    HTML_CLASS = os.getenv("HTML_CLASS")
 
 
 settings = Settings()
